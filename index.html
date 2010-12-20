@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
@@ -76,3 +77,152 @@
   
 </body>
 </html>
+=======
+<html>
+    <head>
+        <style>
+            #content{width:714px;border: 8px solid black; margin: auto; position: relative; background-color: white;}
+            #left{border: 4px solid gray; margin-left:6px; background: url(blue.jpg);}
+            #right_wrap{float: right; width:354px;}
+            #right{border: 4px solid gray; margin-right:6px; background: url(green.jpg);}
+            .clear {clear:both;}
+            .topfixed{position: fixed; top: 0px;}
+            .bottomfixed{position: fixed; bottom : 0px}
+            .absolute {position: absolute;}
+            .bottomabsolute {position: absolute; bottom : 0px}
+            .static {position: static;}
+            #page{margin-left:210px; padding-bottom:300px;}
+            #forms {position: fixed; top: 40px; width: 200px;}
+            .column{margin-top:30px; margin-bottom: 60px; width:340px;}
+        </style>
+    </head>
+    <body>
+        <div id="forms">
+            <div class="slider">
+                <p id="blue_label"><strong>Blue Column:</strong><span></span>px</p>
+                <div id="blue_slider"></div>
+            </div>
+            <div class="slider">
+                <p id="green_label"><strong>Green Column:</strong><span></span>px</p>
+                <div id="green_slider"></div>
+            </div>
+        </div>
+        <div id="page">
+            <div id="content">
+                <div id="right_wrap">
+                    <div id="right" class="column">
+                    </div>
+                    <div class='clear'></div>
+                </div>
+                <div id="left" class="column">
+                </div>
+                <div class='clear'></div>
+            </div>
+        </div>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+        <script type="text/javascript" src="http://www.bramstein.com/projects/jsizes/jquery.sizes.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.6/jquery-ui.min.js"></script> 
+        <script type='text/javascript'>
+            
+            $(function(){
+                
+                var make_slider = function(slider, label, column){
+                    
+                    var set_column = function(value){
+                        $(column).css({height: value+"px"});
+                        $("span", label).html(value);
+                    }
+                    
+                    var default_value = 600
+                    
+                    $(slider).slider({
+                                range: "min",
+                                value: default_value,
+                                min: 200,
+                                max: 2000,
+                                slide: function( event, ui ) {
+                                    set_column(ui.value)
+                                }
+                    });
+                    
+                    set_column(default_value);
+                }
+                
+                make_slider('#blue_slider', "#blue_label", "#left");
+                make_slider('#green_slider', "#green_label", "#right");
+                
+                var lastScrollTop = 0;
+                $(window).bind("scroll", function(){
+                    
+                    var right = $('#right')
+                    var left = $('#left')
+                    var parent = $('#content')
+                    
+                    var topfixed = 'topfixed'
+                    var bottomfixed = 'bottomfixed'
+                    var absolute = 'absolute'
+                    var bottomabsolute = 'bottomabsolute'
+
+                    var strip = function(element){
+                        return element.removeClass([topfixed,bottomfixed,absolute,bottomabsolute].join(' ')).css({'top':''})
+                    }
+
+                    if (right.outerHeight(true) == left.outerHeight(true)){
+                        strip(right);
+                        strip(left);
+                        return
+                    }
+                    else if(right.outerHeight(true) < left.outerHeight(true)){
+                        var elem  = right;
+                        var other = left; 
+                    } else{
+                        var elem  = left;
+                        var other = right;
+                    }
+
+                    //reset the position of the other element
+                    strip(other)
+
+                    var parent_top = parent.offset().top + parent.padding().top + parent.border().top
+                    var parent_bottom = parent_top + parent.innerHeight()
+
+                    var elem_top = elem.offset().top - elem.margin().top
+                    var elem_height = elem.outerHeight(true)
+                    var elem_bottom = elem_top + elem_height
+
+                    var scroll_top = $(this).scrollTop()
+                    var scroll_bottom = $(this).scrollTop() + $(this).height()
+                    var window_height = $(this).height()
+
+                    if (scroll_top > lastScrollTop){
+                        //downscroll code
+                        if (elem_bottom >= parent_bottom){
+                            strip(elem).addClass(bottomabsolute);
+                        }else if (elem_bottom <= scroll_bottom && elem_height > window_height){
+                            strip(elem).addClass(bottomfixed)
+                        }else if (elem_height > window_height && elem_bottom > scroll_bottom){
+                            var place = elem_top - parent_top
+                            strip(elem).css({top:place}).addClass(absolute)
+                        }else if (elem_top < scroll_top){
+                            strip(elem).addClass(topfixed)
+                        }
+                    }
+                    else {
+                        // upscroll code
+                        if (elem_top <= parent_top){
+                            strip(elem);
+                        }else if (elem_top >= scroll_top){
+                            strip(elem).addClass(topfixed)
+                        }else if (elem_height > window_height && elem_top < scroll_top && elem_bottom < parent_bottom){
+                            var place = elem_top - parent_top
+                            strip(elem).css({top:place}).addClass(absolute)
+                        }
+                    }
+                    lastScrollTop = scroll_top;
+                });
+            });
+        </script>
+        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/themes/base/jquery-ui.css">
+    </body>
+</html>
+>>>>>>> master

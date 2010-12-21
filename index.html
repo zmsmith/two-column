@@ -51,6 +51,8 @@
                     var set_column = function(value){
                         $(column).css({height: value+"px"});
                         $("span", label).html(value);
+                        //simulate scroll to fix css on change in column height
+                        $(window).scroll()
                     }
                     
                     var default_value = 600
